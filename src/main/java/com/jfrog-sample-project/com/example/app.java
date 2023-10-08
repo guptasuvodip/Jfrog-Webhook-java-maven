@@ -1,7 +1,7 @@
-package com.welcome;
+package com.Welcome;
 
-public class HelloWorld {
+public class App {
     public static void main(String[] args) {
-        System.out.println("Hello, Welcome!");
+        System.out.println("Welcome to Jenkins Maven Java & JFrog Project");
     }
 }
