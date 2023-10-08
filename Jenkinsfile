@@ -2,19 +2,21 @@ pipeline {
     agent any
     tools {
         maven 'mvn'
-        jdk 'jdk:11'
+        jdk 'jdk11'
     }
-    environment{
-        scannerHome= tool 'sonar-tool'
+    environment {
+        scannerHome = tool 'sonar-tool'
     }
     
-    // stages {
-    //     stage('Git Checkout') {
-    //         steps {
-                
-    //             git branch: 'main', url: 'https://github.com/devprojects2023/Jfrog-Webhook-java-maven.git'
-    //         }
-    //     }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    // Clone the repository
+                    git branch: 'main', url: 'https://github.com/devprojects2023/Jfrog-Webhook-java-maven.git'
+                }
+            }
+        }
         
         stage('Build') {
             steps {
@@ -23,16 +25,18 @@ pipeline {
             }
         }
 
-        stage('sonarqube analisis') {
+        stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('Sonarurl') {
-                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=Jfrog-maven -Dsonar.projectKey=Jfrog-maven -Dsonar.java.binaries=src/main/java -Dsonar.token=squ_a3b7bbd001cd7574d057ba1392886b92e760837e"
-                  
+                script {
+                    // Run SonarQube analysis
+                    withSonarQubeEnv('Sonarurl') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectName=Jfrog-maven -Dsonar.projectKey=Jfrog-maven -Dsonar.java.binaries=src/main/java -Dsonar.token=squ_a3b7bbd001cd7574d057ba1392886b92e760837e"
+                    }
                 }
             }
         }
         
-        stage('Publish to Jfrog Artifactory') {
+        stage('Publish to JFrog Artifactory') {
             steps {
                 script {
                     def server = Artifactory.server 'Jfrog01'
@@ -58,4 +62,4 @@ pipeline {
             }
         }
     }
-
+}
